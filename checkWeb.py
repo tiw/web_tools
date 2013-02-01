@@ -13,6 +13,7 @@ def sendRTX(message):
 
 parser = argparse.ArgumentParser()
 parser.add_argument("url_list", help="Name of the file contains the list of urls to check")
+parser.add_argument("-s", "--sendRTX", help="Send error message through RTX", action="store_true")
 args = parser.parse_args()
 
 listFile = '%s/%s' % (sys.path[0], args.url_list)
@@ -24,8 +25,13 @@ for l in lines:
         url, shouldCode = tuple(l.strip().split(' '))
         code = urllib.urlopen(url).getcode()
         if int(shouldCode) != int(code):
-            sendRTX(url)
+            sys.stdout.write('E')
+            if args.sendRTX:
+                sendRTX(url)
         else:
             sys.stdout.write('.')
     except Exception, e:
         print 'E' + str(e)
+        if args.sendRTX:
+            sendRTX(url + str())
+
